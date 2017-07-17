@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,17 +40,23 @@ public class XlsxMain {
     public void start() throws Exception {
         //加载txt文件
         InputStream inputStream = new FileInputStream(inputFilePath);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF16")));
 
         List<Data> list = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String line = null;
         while(null != (line = br.readLine())){
-            String[] split = line.split("\\.");
-            String timeStr = sdf.format(split[0]);
-            String status = split[2];
+            try {
+                String[] split = line.split(",");
+                String timeStr = split[0];
+                String status = split[2];
 
-            list.add(new Data(timeStr, status));
+                list.add(new Data(timeStr, status));
+            }
+            catch (Exception e){
+                System.out.println(line);
+                e.printStackTrace();
+            }
         }
         List<Data> outList = new ArrayList<>();
 
