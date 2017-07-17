@@ -37,34 +37,20 @@ public class XlsxMain {
     }
 
     public void start() throws Exception {
-        //加载xlsx文件
+        //加载txt文件
         InputStream inputStream = new FileInputStream(inputFilePath);
-        Workbook wb = new XSSFWorkbook(inputStream);
-        Sheet sheet0 = wb.getSheetAt(0);
-        int lastRowNum = sheet0.getLastRowNum();
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
         List<Data> list = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String line = null;
+        while(null != (line = br.readLine())){
+            String[] split = line.split("\\.");
+            String timeStr = sdf.format(split[0]);
+            String status = split[2];
 
-        for (int i = 0; i <= lastRowNum; i++) {
-            Row row = sheet0.getRow(i);
-            Cell cell0 = row.getCell(0);
-            int cellType = cell0.getCellType();
-            short dataFormat = cell0.getCellStyle().getDataFormat();
-            String dataFormatString = cell0.getCellStyle().getDataFormatString();
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            try {
-                double value = cell0.getNumericCellValue();
-                Date date = org.apache.poi.ss.usermodel.DateUtil
-                        .getJavaDate(value);
-                String timeStr = sdf.format(date);
-                String status = row.getCell(2).getStringCellValue();
-
-                list.add(new Data(timeStr, status));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            list.add(new Data(timeStr, status));
         }
-
         List<Data> outList = new ArrayList<>();
 
         delSame(list);
