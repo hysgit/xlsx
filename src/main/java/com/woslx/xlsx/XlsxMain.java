@@ -108,7 +108,11 @@ public class XlsxMain {
         sheet.setColumnWidth(2,2560);
         //epoch_number	unix_ts	date	start_time 	丁秀梅	final_score	score1	score2	remark
         Row rowx = sheet.createRow(0);
-        String name = inputFilePath.split("\\.")[0].split("-")[5];
+        String[] split = inputFilePath.split("\\.")[0].split("-");
+        String name = split[split.length-1];
+        System.out.println(inputFilePath);
+        System.out.println(name);
+        System.out.println(Arrays.toString(inputFilePath.split("\\.")));
         rowx.createCell(0).setCellValue("epoch_number");
         rowx.createCell(1).setCellValue("unix_ts");
         rowx.createCell(2).setCellValue("date");
