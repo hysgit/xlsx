@@ -68,7 +68,6 @@ public class XlsxMain {
             Data next = list.get(i + 1);
 
             do {
-
                 Date date = new Date();
                 date.setTime(timenow);
                 Data save = new Data(new SimpleDateFormat("HH:mm:ss").format(date), datanow.getStatus());
@@ -77,6 +76,11 @@ public class XlsxMain {
             }
             while (timenow < next.getTimestamp());
         }
+        Data datanow = list.get(list.size()-1);
+        Date date = new Date();
+        date.setTime(timenow);
+        Data save = new Data(new SimpleDateFormat("HH:mm:ss").format(date), datanow.getStatus());
+        outList.add(save);
 
         save(outList);
         System.out.println();
@@ -197,38 +201,51 @@ public class XlsxMain {
         }
     }
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args2) throws ParseException {
 
-        if (args.length == 0) {
-            System.out.println("缺少文件,请输入完整文件名,包括扩展名");
-            System.exit(1);
+        String basepath = System.getProperty("user.dir");
+        File dir = new File(basepath);
+        String[] array = dir.list();
+        List<String> list = new ArrayList<>();
+
+        for (String p : array) {
+            if(p.endsWith("txt")){
+                list.add(p);
+            }
         }
-        System.out.println(Arrays.deepToString(args));
-        Date today = new SimpleDateFormat("yyyy-MM-dd").parse(args[0].substring(0, 10));
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(today);
-        calendar.add(Calendar.DATE, 1);
-        Date nextDay = calendar.getTime();
-        SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
-        XlsxMain.today = yyyyMMdd.format(today);
-        XlsxMain.nextday = yyyyMMdd.format(nextDay) + "0";
-
-        String path = System.getProperty("user.dir");
-        path = path + "/" + args[0];
-        System.out.println(path);
-        File file = new File(path);
-        if (!file.exists()) {
-            System.out.println("文件不存在,请输入完整文件名,包括扩展名");
+        System.out.println(list.size());
+        System.out.println(list);
+        if(list.size()==0) {
             System.exit(1);
         }
 
-        try {
-            XlsxMain xlsxMain = new XlsxMain();
-            xlsxMain.setInputFilePath(path);
-            xlsxMain.setOutputFilePath(path.substring(0, path.indexOf('.')) + "时间修正.xlsx");
-            xlsxMain.start();
-        } catch (Exception e) {
-            e.printStackTrace();
+        for(String filePath : list) {
+            Date today = new SimpleDateFormat("yyyy-MM-dd").parse(filePath.substring(0, 10));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(today);
+            calendar.add(Calendar.DATE, 1);
+            Date nextDay = calendar.getTime();
+            SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
+            XlsxMain.today = yyyyMMdd.format(today);
+            XlsxMain.nextday = yyyyMMdd.format(nextDay) + "0";
+
+
+            String path = basepath + "/" + filePath;
+            System.out.println(path);
+            File file = new File(path);
+            if (!file.exists()) {
+                System.out.println("文件不存在,请输入完整文件名,包括扩展名");
+                System.exit(1);
+            }
+
+            try {
+                XlsxMain xlsxMain = new XlsxMain();
+                xlsxMain.setInputFilePath(path);
+                xlsxMain.setOutputFilePath(path.substring(0, path.indexOf('.')) + "时间修正.xlsx");
+                xlsxMain.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
