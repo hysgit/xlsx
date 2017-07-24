@@ -45,15 +45,14 @@ public class XlsxMain {
         List<Data> list = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String line = null;
-        while(null != (line = br.readLine())){
+        while (null != (line = br.readLine())) {
             try {
                 String[] split = line.split(",");
                 String timeStr = split[0];
                 String status = split[2];
 
                 list.add(new Data(timeStr, status));
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(line);
                 e.printStackTrace();
             }
@@ -101,15 +100,15 @@ public class XlsxMain {
 
     private void save(List<Data> outList) throws Exception {
 
-//        FileOutputStream fileOut = new FileOutputStream("/home/hy/tmp/2017-07-11-黄跃-评分事件-丁秀梅时间修正.xlsx");
+//      FileOutputStream fileOut = new FileOutputStream("/home/hy/tmp/2017-07-11-黄跃-评分事件-丁秀梅时间修正.xlsx");
         FileOutputStream fileOut = new FileOutputStream(outputFilePath);
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet();
-        sheet.setColumnWidth(2,2560);
+        sheet.setColumnWidth(2, 2560);
         //epoch_number	unix_ts	date	start_time 	丁秀梅	final_score	score1	score2	remark
         Row rowx = sheet.createRow(0);
         String[] split = inputFilePath.split("\\.")[0].split("-");
-        String name = split[split.length-1];
+        String name = split[split.length - 1];
         System.out.println(inputFilePath);
         System.out.println(name);
         System.out.println(Arrays.toString(inputFilePath.split("\\.")));
@@ -155,12 +154,12 @@ public class XlsxMain {
         Date date = new Date();
         date.setTime(timestamp);
         int seconds = date.getSeconds();
-        if (seconds >= 16 && seconds <= 45) {
+        if (seconds >= 16 && seconds <= 44) {
             date.setSeconds(30);
         } else {
             date.setSeconds(0);
-            if(seconds>45){
-                date.setMinutes(date.getMinutes()+1);
+            if (seconds > 44) {
+                date.setMinutes(date.getMinutes() + 1);
             }
         }
         return date.getTime();
@@ -199,7 +198,8 @@ public class XlsxMain {
     }
 
     public static void main(String[] args) throws ParseException {
-        if(args.length ==0){
+
+        if (args.length == 0) {
             System.out.println("缺少文件,请输入完整文件名,包括扩展名");
             System.exit(1);
         }
@@ -207,26 +207,25 @@ public class XlsxMain {
         Date today = new SimpleDateFormat("yyyy-MM-dd").parse(args[0].substring(0, 10));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);
-        calendar.add(Calendar.DATE,1);
+        calendar.add(Calendar.DATE, 1);
         Date nextDay = calendar.getTime();
         SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
         XlsxMain.today = yyyyMMdd.format(today);
-        XlsxMain.nextday = yyyyMMdd.format(nextDay)+"0";
+        XlsxMain.nextday = yyyyMMdd.format(nextDay) + "0";
 
         String path = System.getProperty("user.dir");
-        path = path+"/"+args[0];
+        path = path + "/" + args[0];
         System.out.println(path);
         File file = new File(path);
-        if(!file.exists()){
+        if (!file.exists()) {
             System.out.println("文件不存在,请输入完整文件名,包括扩展名");
             System.exit(1);
         }
 
-
         try {
             XlsxMain xlsxMain = new XlsxMain();
             xlsxMain.setInputFilePath(path);
-            xlsxMain.setOutputFilePath(path.substring(0,path.indexOf('.'))+"时间修正.xlsx");
+            xlsxMain.setOutputFilePath(path.substring(0, path.indexOf('.')) + "时间修正.xlsx");
             xlsxMain.start();
         } catch (Exception e) {
             e.printStackTrace();
