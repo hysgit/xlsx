@@ -31,16 +31,22 @@ public class Step23 {
                 if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
                     String stringCellValue = cell.getStringCellValue().trim();
                     if (("未评分").equals(stringCellValue)) {
+                        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(5);
                     } else if (("N1").equals(stringCellValue)) {
+                        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(1);
                     } else if (("N2").equals(stringCellValue)) {
+                        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(2);
                     } else if (("N3").equals(stringCellValue)) {
+                        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(3);
                     } else if (("REM").equals(stringCellValue)) {
+                        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(4);
                     } else if (("清醒").equals(stringCellValue)) {
+                        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(5);
                     } else {
                         System.out.println("error");

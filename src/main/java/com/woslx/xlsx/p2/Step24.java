@@ -61,18 +61,35 @@ public class Step24 {
 
             Cell cellYunnan = sheetYun.getRow(22 + x).getCell(1);
             Cell cell5 = rowding.getCell(5);
+            if(cell5.getCellType() == Cell.CELL_TYPE_STRING){
+                System.out.println();
+            }
             double data1 = cell5.getNumericCellValue();
             Cell cell6 = rowding.getCell(6);
             if (cell6 == null) {
                 cell6 = rowding.createCell(6);
             }
+
+
             int data2 = (int) cellYunnan.getNumericCellValue();
             cell6.setCellValue(data2);
             Cell cell7 = rowding.getCell(7);
             if (cell7 == null) {
                 cell7 = rowding.createCell(7);
             }
-            int data3 = (int) cellshanghai.getNumericCellValue();
+
+            int data3 = 0;
+            int cellType = cellshanghai.getCellType();
+            if(cellType == Cell.CELL_TYPE_STRING){
+                data3 = Integer.valueOf(cellshanghai.getStringCellValue());
+            }
+            else if(cellType == Cell.CELL_TYPE_NUMERIC){
+                data3 = (int) cellshanghai.getNumericCellValue();
+            }
+            else{
+                System.exit(1);
+                System.out.println();
+            }
             cell7.setCellValue(data3);
 
             x++;
