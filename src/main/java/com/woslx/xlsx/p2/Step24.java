@@ -1,17 +1,15 @@
 package com.woslx.xlsx.p2;
 
-import com.sun.jndi.toolkit.ctx.StringHeadTail;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import sun.java2d.opengl.GLXSurfaceData;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -62,10 +60,11 @@ public class Step24 {
 
     }
 
-    private static void saveSheet(Sheet sheetYuan) throws IOException {
-        Workbook wb = new XSSFWorkbook();
-        FileOutputStream fos = new FileOutputStream("/home/hy/tmp/p2/result/" + sheetYuan.getSheetName() + ".xlsx");
+    private static void saveSheet(Sheet sheetYuan) throws IOException, ParseException {
+        XSSFWorkbook wb = new XSSFWorkbook();
+        FileOutputStream fos = new FileOutputStream("/home/hy/tmp/p2/result/" + HanyuPinyinHelper.getPinyinString(sheetYuan.getSheetName()) + ".xlsx");
         Sheet wbSheet = wb.createSheet();
+        wbSheet.setColumnWidth(2, 2560);
         int lastRowNum = sheetYuan.getLastRowNum();
         Row row = wbSheet.createRow(0);
         row.createCell(0).setCellValue("epoch_number");
@@ -73,10 +72,11 @@ public class Step24 {
         row.createCell(2).setCellValue("date");
         row.createCell(3).setCellValue("start_time");
         row.createCell(4).setCellValue("final_score");
-        row.createCell(5).setCellValue("score1(丁)");
+        row.createCell(5).setCellValue("score1");
         row.createCell(6).setCellValue("score2");
         row.createCell(7).setCellValue("score3");
         row.createCell(8).setCellValue("remark");
+        Calendar calendar = Calendar.getInstance();
         for (int i = 1; i <= lastRowNum; i++) {
             Row rowYuan = sheetYuan.getRow(i);
             Row newsheetRow = wbSheet.createRow(i);
@@ -85,21 +85,34 @@ public class Step24 {
             if (i == 1) {
                 Cell cell2yuan = rowYuan.getCell(2);
                 Date javaDate = HSSFDateUtil.getJavaDate(cell2yuan.getNumericCellValue());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                String yyyyMMdd = sdf.format(javaDate);
+
+                Cell cell3yuan = rowYuan.getCell(3);
+                Date javaDate2 = HSSFDateUtil.getJavaDate(cell3yuan.getNumericCellValue());
+                sdf = new SimpleDateFormat("HH:mm:ss");
+                String HHmmss = sdf.format(javaDate2);
+                sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+                Date date = sdf.parse(yyyyMMdd + HHmmss);
+
+                calendar.setTime(date);
+
                 Cell newcell2 = newsheetRow.createCell(2);
                 CellStyle cellStyle2 = wb.createCellStyle();
                 CreationHelper createHelper2 = wb.getCreationHelper();
                 cellStyle2.setDataFormat(createHelper2.createDataFormat().getFormat("m/d/yyyy"));
                 newcell2.setCellStyle(cellStyle2);
-                newcell2.setCellValue(javaDate);
+                newcell2.setCellValue(calendar.getTime());
             }
-            Cell cell3yuan = rowYuan.getCell(3);
+
             Cell newcell3 = newsheetRow.createCell(3);
-            Date javaDate = HSSFDateUtil.getJavaDate(cell3yuan.getNumericCellValue());
+
             CellStyle cellStyle = wb.createCellStyle();
             CreationHelper createHelper = wb.getCreationHelper();
             cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("HH:mm:ss"));
             newcell3.setCellStyle(cellStyle);
-            newcell3.setCellValue(javaDate);
+            Date time = calendar.getTime();
+            newcell3.setCellValue(time);
 
             Cell cell4 = newsheetRow.createCell(4);
             cell4.setCellValue(rowYuan.getCell(4).getNumericCellValue());
@@ -112,6 +125,8 @@ public class Step24 {
 
             Cell cell7 = newsheetRow.createCell(7);
             cell7.setCellValue(rowYuan.getCell(7).getNumericCellValue());
+
+            calendar.add(Calendar.SECOND,30);
         }
         wb.write(fos);
         wb.close();
@@ -149,7 +164,8 @@ public class Step24 {
 
 
             int data2 = (int) cellYunnan.getNumericCellValue();
-            cell6.setCellValue(data2);
+            cell6.setCellValue(data2);      //云南
+
             Cell cell7 = rowding.getCell(7);
             if (cell7 == null) {
                 cell7 = rowding.createCell(7);
@@ -165,7 +181,7 @@ public class Step24 {
                 System.exit(1);
                 System.out.println();
             }
-            cell7.setCellValue(data3);
+            cell7.setCellValue(data3);      //上海
             Cell cell4 = rowding.createCell(4);
             if ((data1 == data2) && (data1 == data3)) {
                 allSame++;
