@@ -13,8 +13,7 @@ public class Find3to5 {
         File dir = new File("/home/hy/tmp/p");
         File[] files = dir.listFiles();
         for (File file : files) {
-            if(file.getName().startsWith("."))
-            {
+            if (file.getName().startsWith(".")) {
                 continue;
             }
             InputStream is = null;
@@ -26,21 +25,27 @@ public class Find3to5 {
                 Sheet sheet = wb.getSheetAt(0);
                 int rowNum = sheet.getLastRowNum();
 
+                int c4 = 0;
                 int c5 = 0;
                 int c6 = 0;
                 int c7 = 0;
 
+                int cnt4 = 0;
                 int cnt5 = 0;
                 int cnt6 = 0;
                 int cnt7 = 0;
 
                 for (int i = 1; i <= rowNum; i++) {
                     Row row = sheet.getRow(i);
+                    int v4 = (int) row.getCell(4).getNumericCellValue();
                     int v5 = (int) row.getCell(5).getNumericCellValue();
                     int v6 = (int) row.getCell(6).getNumericCellValue();
                     int v7 = (int) row.getCell(7).getNumericCellValue();
 
                     if (i > 1) {
+                        if (c4 == 3 && v4 == 5) {
+                            cnt4++;
+                        }
                         if (c5 == 3 && v5 == 5) {
                             cnt5++;
                         }
@@ -51,7 +56,7 @@ public class Find3to5 {
                             cnt7++;
                         }
                     }
-
+                    c4 = v4;
                     c5 = v5;
                     c6 = v6;
                     c7 = v7;
@@ -60,16 +65,16 @@ public class Find3to5 {
                 System.out.println("医生1:" + cnt5);
                 System.out.println("医生2:" + cnt6);
                 System.out.println("医生3:" + cnt7);
+                System.out.println("综合:" + cnt4);
                 System.out.println();
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("file:"+file.getName());
-            }
-            finally {
-                if(wb!= null){
+                System.out.println("file:" + file.getName());
+            } finally {
+                if (wb != null) {
                     wb.close();
                 }
-                if(is!=null){
+                if (is != null) {
                     is.close();
                 }
             }
