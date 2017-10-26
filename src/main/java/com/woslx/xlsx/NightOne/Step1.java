@@ -49,10 +49,13 @@ public class Step1 {
         System.out.println(name);
         wb.createSheet(getSheetNameFromFile(ftemp));
 
-        BufferedReader br = new BufferedReader(new FileReader(ftemp));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(ftemp), "utf-16"));
         br.readLine();      //去除第一行
         String line = null;
-        while()
+        while(null != (line = br.readLine())){
+            String[] split = line.split(",");
+
+        }
     }
 
     private static String getSheetNameFromFile(File ftemp) {
