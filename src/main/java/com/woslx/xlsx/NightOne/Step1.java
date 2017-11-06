@@ -34,7 +34,6 @@ public class Step1 {
         Workbook wb = new XSSFWorkbook();
         for (File ftemp : files) {
             file2sheet(ftemp, wb);
-
         }
 
         OutputStream os = new FileOutputStream("/home/hy/tmp/nightone/dingout.xlsx");
