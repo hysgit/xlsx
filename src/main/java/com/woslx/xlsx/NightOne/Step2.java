@@ -61,9 +61,11 @@ public class Step2 {
             Row row = sheet.createRow(x);
             if (i == 22) {
                 Date javaDate = HSSFDateUtil.getJavaDate(rowx.getCell(3).getNumericCellValue());
+                javaDate.setYear(2017);
+                System.out.println(javaDate);
                 CellStyle cellStyle = wb.createCellStyle();
-                CreationHelper createHelper2 = wb.getCreationHelper();
-                cellStyle.setDataFormat(createHelper2.createDataFormat().getFormat("m/d/yyyy"));
+                CreationHelper createHelper = wb.getCreationHelper();
+                cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("HH:mm:ss"));
                 Cell cell = row.createCell(2);
                 cell.setCellStyle(cellStyle);
                 cell.setCellValue(javaDate);
